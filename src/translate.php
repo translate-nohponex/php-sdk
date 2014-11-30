@@ -28,28 +28,31 @@ class Translate {
     const REQUEST_NOT_URL_ENCODED   = 2;
     
     
-    private $API_URL = 'https://translate.nohponex.gr';
+    private $API_URL = 'https://translate.nohponex.gr/';
 
     private $authentication_credentials = FALSE;
     private $authentication_header = FALSE;
     
+    private $api_key; 
     /**
      * Create a new instance of the class using user's email and password as authentication credentials
      * @return Returns an instance of Translate
      */
-    public function __construct( $email, $password, $useSSL = FALSE ) {
-        $this->authentication_credentials = array('email' => $email, 'password' => $password);
+    public function __construct( $api_key, $useSSL = FALSE ) {
+
+        $this->api_key = $api_key;
+        //$this->authentication_credentials = array('email' => $email, 'password' => $password);
         
-        $this->authentication_header = 'Authorization: Basic ' . base64_encode( $email . ':' . $password );
+        //$this->authentication_header = 'Authorization: Basic ' . base64_encode( $email . ':' . $password );
     }
     
     /**
      * Create a new instance of the class using API key as authentication credentials
      * @return Returns an instance of Translate
      */
-    public static function use_api_key( $key, $useSSL = FALSE ){
+   /* public static function use_api_key( $key, $useSSL = FALSE ){
         return new Translate( '', $key, $useSSL );
-    }
+    }*/
     
     /**
      * Perform an cURL request to API server,
@@ -60,7 +63,7 @@ class Translate {
     private function request( $resource, $method = Translate::METHOD_GET, $data = NULL, $flags = Translate::REQUEST_EMPTY_FLAG,  $accept = 'application/json', $encoding = NULL ) {
         
         //Create url
-        $url = $this->API_URL . $resource;
+        $url = $this->API_URL . $resource . '&api_key=' . $this->api_key;
         
         //Extract flags
         $binary         =    ( $flags & Translate::REQUEST_BINARY          ) != 0;
@@ -87,8 +90,9 @@ class Translate {
         curl_setopt( $handle, CURLOPT_URL, $url );
         curl_setopt( $handle, CURLOPT_HTTPHEADER, $headers );
         curl_setopt( $handle, CURLOPT_RETURNTRANSFER, TRUE );
-        //ToDo remove
-        curl_setopt( $handle, CURLOPT_SSL_VERIFYHOST, FALSE );
+
+        //TODO remove
+        //curl_setopt( $handle, CURLOPT_SSL_VERIFYHOST, FALSE );
         curl_setopt( $handle, CURLOPT_SSL_VERIFYPEER, FALSE );
         
         if( $binary ){
@@ -146,8 +150,8 @@ class Translate {
      * @throws TranslateAPIException on failure
      * @return Returns user's information
      */
-    public function fetch() {
-        $r = $this->request( "fetch/listing", Translate::METHOD_GET );
+    public function fetch( $project_id, $language ) {
+        $r = $this->request( "fetch/listing?id=" . $project_id . '&language=' . $language, Translate::METHOD_GET );
               
         return $r[ 'translation' ];
     }
