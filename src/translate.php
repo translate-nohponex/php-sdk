@@ -66,13 +66,16 @@ class Translate {
         $url = $this->API_URL . $resource . '&api_key=' . $this->api_key;
         
         //Extract flags
+
+        //Is the request binary
         $binary         =    ( $flags & Translate::REQUEST_BINARY          ) != 0;
+        //If the request paramters form encoded
         $form_encoded   =  !(( $flags & Translate::REQUEST_NOT_URL_ENCODED ) != 0);
         
         //Initialize headers
         $headers = array(
             'Accept: ' . $accept,
-            $this->authentication_header
+            /*$this->authentication_header*/
         );
         
         //If request's data is encoded provide the Contenty type Header
@@ -98,8 +101,8 @@ class Translate {
         if( $binary ){
             curl_setopt($handle, CURLOPT_BINARYTRANSFER, TRUE );
         }
-
-        switch($method) {
+        //Switch on HTTP Request method
+        switch( $method ) {
             case Translate::METHOD_GET :
                 break;
             case Translate::METHOD_POST :
@@ -123,8 +126,9 @@ class Translate {
             default:
                 throw new TranslateAPIException( 'Unsupporter method' );
         }
-       
+        //Get response
         $response = curl_exec( $handle );
+        //Get response code
         $code = curl_getinfo( $handle, CURLINFO_HTTP_CODE );
         
         //Catch curl error
@@ -135,7 +139,7 @@ class Translate {
         //Throw exception on responce failure
         if( !in_array( $code, array( 200, 201, 202 ) ) ){ // OK, Created, Accepted
             $decoded = json_decode( $response, true );     
-            //var_dump( $response );
+            
             throw new TranslateAPIException( $decoded[ 'error' ], $code );
         }
         
@@ -146,12 +150,15 @@ class Translate {
     }
 
     /**
-     * Check users authentication credentials
+     * Get translation
      * @throws TranslateAPIException on failure
-     * @return Returns user's information
+     * @return Returns translation object for selected $language
      */
     public function fetch( $project_id, $language ) {
-        $r = $this->request( "fetch/listing?id=" . $project_id . '&language=' . $language, Translate::METHOD_GET );
+
+        $p = array( 'id' => $project_id, 'language' => $language );
+
+        $r = $this->request( ( "fetch/listing?" . http_build_query( $p ) ), Translate::METHOD_GET );
               
         return $r[ 'translation' ];
     }
