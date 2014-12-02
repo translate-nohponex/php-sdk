@@ -167,8 +167,24 @@ class Translate {
 
         $p = array( 'id' => $project_id, 'language' => $language );
 
-        $r = $this->request( ( "fetch/listing?" . http_build_query( $p ) ), Translate::METHOD_GET );
+        $r = $this->request( ( 'fetch/listing?' . http_build_query( $p ) ), Translate::METHOD_GET );
               
         return $r[ 'translation' ];
     }
+
+    /**
+     * Add keyword to a project
+     */
+    public function add_key( $project_id, $keyword ){
+
+        $p = array( 'id' => $project_id, 'key' => $keyword );
+
+        try{
+            $r = $this->request( 'fetch/create?', Translate::METHOD_POST, $p );
+        }catch( TranslateAPIException $e ){
+            //Key exists
+            return FALSE;
+        }
+        return TRUE;
+    } 
 }

@@ -58,6 +58,9 @@
 
             //Initialize API 
             $translate = new Translate\Translate( $api_key );
+
+            //Add new key
+            $translate->add_key( $project_id, 'new_missing_key_2' );
         ?>
 
         <h3>Show all translations as PHP Array</h3>
