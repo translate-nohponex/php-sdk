@@ -95,6 +95,7 @@ class Translate {
         //Set timeout values ( in seconds )
         curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, 1 );
         curl_setopt( $handle, CURLOPT_TIMEOUT, 3 );
+        curl_setopt( $handle, CURLOPT_NOSIGNAL, 1 );
 
         //Security options
         //curl_setopt( $handle, CURLOPT_SSL_VERIFYHOST, FALSE );
