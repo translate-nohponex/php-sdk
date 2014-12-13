@@ -15,8 +15,8 @@ class TranslateAPIException extends \Exception{
  * And execute the available API methods
  */
 class Translate {
-    const VERSION = '0.0.0';
-    const VERSION_INTEGER = 000;
+    const VERSION = '0.0.1';
+    const VERSION_INTEGER = 001;
     
     const METHOD_GET    = 'GET';
     const METHOD_POST   = 'POST';
@@ -92,6 +92,9 @@ class Translate {
         curl_setopt( $handle, CURLOPT_URL, $url );
         curl_setopt( $handle, CURLOPT_HTTPHEADER, $headers );
         curl_setopt( $handle, CURLOPT_RETURNTRANSFER, TRUE );
+        //Set timeout values ( in seconds )
+        curl_setopt( $handle, CURLOPT_CONNECTTIMEOUT, 1 );
+        curl_setopt( $handle, CURLOPT_TIMEOUT, 3 );
 
         //Security options
         //curl_setopt( $handle, CURLOPT_SSL_VERIFYHOST, FALSE );
