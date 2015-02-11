@@ -42,6 +42,7 @@ class Translate {
 
     /**
      * Create a new instance of the class using user's email and password as authentication credentials
+     * @param string $api_key Your API KEY
      * @return Returns an instance of Translate
      */
     public function __construct( $api_key, $useSSL = FALSE ) {
@@ -56,8 +57,8 @@ class Translate {
     /**
      * Perform an cURL request to API server,
      * this is an internal function
-     * @param $resource String Resource fraction of the url for example map/?name=xx 
-     * @return Returns an array with the response code and the response, if the accept parameter is set to json the the response will be decoded as json    
+     * @param string $resource Resource fraction of the url for example map/?name=xx 
+     * @return array Returns an array with the response code and the response, if the accept parameter is set to json the the response will be decoded as json    
      */
     private function request( $resource, $method = Translate::METHOD_GET, $data = NULL, $flags = Translate::REQUEST_EMPTY_FLAG,  $accept = 'application/json', $encoding = NULL ) {
         
@@ -163,9 +164,9 @@ class Translate {
     /**
      * Get all translation keys
      * @throws TranslateAPIException on failure
-     * @param $project_id Integer Project's id
-     * @param $language String Lanuage Code
-     * @return Returns translation object for selected $language
+     * @param int $project_id Project's id
+     * @param string $language Lanuage Code
+     * @return array Returns translation array for selected language
      */
     public function fetch( $project_id, $language ) {
 
@@ -178,6 +179,10 @@ class Translate {
 
     /**
      * Add keyword to a project
+     * @throws TranslateAPIException on failure
+     * @param int $project_id Project's id
+     * @param string $keyword Keyword
+     * @return boolean Returns TRUE on success
      */
     public function add_key( $project_id, $keyword ){
 
